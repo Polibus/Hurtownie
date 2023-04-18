@@ -66,7 +66,7 @@ const mainTask = async (cityName) => {
 
 
 const job = new CronJob(
-  '* * * * *',
+  '0 * * * *',
   async function () {
     mainTask("Tarnow").then(mainTask("Warsaw").then(mainTask("Krakow")))
   },
