@@ -35,8 +35,11 @@ app.get('/*', function (req, res) {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-app.listen(port, function () {
+app.listen(port, async function () {
   console.info(`Server is running at ${port}`)
+  await mongo().then((mongoose) => {
+    console.log('connected to database')
+  })
 });
 
 const mainTask = async (cityName) => {
@@ -63,12 +66,9 @@ const mainTask = async (cityName) => {
 
 
 const job = new CronJob(
-  '0 * * * *',
+  '* * * * *',
   async function () {
-    await mongo().then((mongoose) => {
-      console.log('connected to database')
-      mainTask("Tarnow").then(mainTask("Warsaw").then(mainTask("Krakow").then( () => { mongoose.connection.close() })))
-    })
+    mainTask("Tarnow").then(mainTask("Warsaw").then(mainTask("Krakow")))
   },
   null,
   true,
