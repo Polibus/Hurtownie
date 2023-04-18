@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Programowanie reakatywne</title>
+</head>
+<body>
+<div>
+    <label for="temp">Temp:</label><br>
+    <input type="number" id="temp" name="temp" placeholder="Type temperature..." required><br>
+    <label for="hum">Humidity:</label><br>
+    <input type="number" id="hum" name="hum" placeholder="Type humidity..." required><br>
+    <label for="press">Atmospheric pressure:</label><br>
+    <input type="number" id="press" name="press" placeholder="Type pressure..." required><br>
+    <label for="param">Extra param:</label><br>
+    <input type="number" id="param" name="param" placeholder="Type extra param..." required><br>
+    <button class="send">Send</button>
+</div>
+
+<h2 class="info"></h2>
+</body>
+
+<script>
+
+    let temp = document.querySelector('#temp');
+    let hum = document.querySelector('#hum');
+    let press = document.querySelector('#press');
+    let extraParam = document.querySelector('#param');
+    let info = document.querySelector('.info');
+    let send = document.querySelector('.send');
+
+    clear();
+
+    send.addEventListener('click', action);
+
+    function clear() {
+        temp.value = null;
+        hum.value = null;
+        press.value = null;
+        extraParam.value = null;
+    }
+
+    function action() {
+        let temperature = temp.value;
+        let humidity = hum.value;
+        let pressure = press.value;
+        let extraParamToSend = extraParam.value || 0;
+
+        if (!temperature || !humidity || !pressure) {
+            info.innerHTML = "Uzupełnij wszystkie dane";
+        } else {
+            info.innerHTML = '';
+            let data = {
+                temp: temperature,
+                humidity: humidity,
+                pressure: pressure,
+                extraParam: extraParamToSend
+            }
+
+            fetch('http://web-at.usermd.net/api/params', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
+            clear();
+        }
+    }
+
+
+</script>
+
+
+</html>
