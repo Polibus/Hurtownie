@@ -1,23 +1,19 @@
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
-import morgan from 'morgan';
-import routes from './REST/routes';
 const weatherSchema = require("./schema/weatherSchema")
 const mongoose = require('mongoose')
 const mongo = require('./service/mongo')
 const axios = require('axios');
 const CronJob = require('cron').CronJob;
 const { port } = require('./config')
+const http = require('http').Server(app);
+const socketIO = require('socket.io')(http, {
+  cors: {
+      origin: "http://localhost:3000"
+  }
+});
 
 const app = express();
-app.use(express.static(__dirname + '/public'));
-
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json({ limit: '2048kb' }));
-
-app.use(express.static('public'));
 
 app.use(cors());
 
@@ -28,12 +24,6 @@ process.on('SIGINT', () => {
   });
 });
 
-
-routes(app);
-
-app.get('/*', function (req, res) {
-  res.sendFile(__dirname + '/public/index.html');
-});
 
 app.listen(port, async function () {
   console.info(`Server is running at ${port}`)
@@ -74,3 +64,24 @@ const job = new CronJob(
   true,
   'Europe/Warsaw'
 );
+
+socketIO.on('connection', (socket) => {
+  console.log(`${socket.id} user just connected!`)
+
+  socket.on('getData', async (city, dateFirst, dateSecond) => {
+    try {
+        let data = await weatherSchema.find({"city":city, "date":{ $gt:dateFirst, $lt:dateSecond}})
+        callback({
+          data: data
+        })
+    } catch (e) {
+        console.log('error sending data: ', e)
+    }
+})
+  
+  socket.on('disconnect', () => {
+    console.log('A user disconnected')
+    socket.disconnect()
+});
+})
+
