@@ -22,7 +22,7 @@
     "moment": "2.19.2",
     "mongoose": "^7.0.3",
     "sha1": "1.1.1",
-    "socket.io": "2.0.4",
+    "socket.io": "^4.7.0",
     "vision": "4.1.0"
   },
   "author": "Darek",
