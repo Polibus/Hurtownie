@@ -25,7 +25,7 @@ process.on('SIGINT', () => {
 });
 
 
-app.listen(port, async function () {
+http.listen(port, async function () {
   console.info(`Server is running at ${port}`)
   await mongo().then((mongoose) => {
     console.log('connected to database')
@@ -55,15 +55,15 @@ const mainTask = async (cityName) => {
 }
 
 
-const job = new CronJob(
-  '0 * * * *',
-  async function () {
-    mainTask("Tarnow").then(mainTask("Warsaw").then(mainTask("Krakow")))
-  },
-  null,
-  true,
-  'Europe/Warsaw'
-);
+// const job = new CronJob(
+//   '0 * * * *',
+//   async function () {
+//     mainTask("Tarnow").then(mainTask("Warsaw").then(mainTask("Krakow")))
+//   },
+//   null,
+//   true,
+//   'Europe/Warsaw'
+// );
 
 socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`)
