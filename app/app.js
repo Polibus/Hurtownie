@@ -55,15 +55,15 @@ const mainTask = async (cityName) => {
 }
 
 
-// const job = new CronJob(
-//   '0 * * * *',
-//   async function () {
-//     mainTask("Tarnow").then(mainTask("Warsaw").then(mainTask("Krakow")))
-//   },
-//   null,
-//   true,
-//   'Europe/Warsaw'
-// );
+const job = new CronJob(
+  '0 * * * *',
+  async function () {
+    mainTask("Tarnow").then(mainTask("Warsaw").then(mainTask("Krakow")))
+  },
+  null,
+  true,
+  'Europe/Warsaw'
+);
 
 socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`)
