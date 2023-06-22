@@ -69,6 +69,7 @@ socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`)
 
   socket.on('getData', async (city, dateFirst, dateSecond) => {
+    console.log("sendindg data")
     try {
         let data = await weatherSchema.find({"city":city, "date":{ $gt:dateFirst, $lt:dateSecond}})
         callback({
