@@ -37,7 +37,7 @@ const mainTask = async (cityName) => {
     .then((result) => {
       result = result.data
       console.log(mongoose.connection.readyState)
-      let query = new weatherSchema({
+      return weatherSchema.insertOne({
         date: result.dt,
         timezone: result.timezone,
         city: result.name,
@@ -50,7 +50,6 @@ const mainTask = async (cityName) => {
         windSpeed: result.wind.speed,
         windDeg: result.wind.deg,
       })
-      return query.save()
     })
 }
 
